@@ -1,0 +1,747 @@
+<!DOCTYPE html><html lang="zh"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精氣神 - 修炼之旅</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+        :root {
+            --jing-color: #3498db; /* 蓝色代表水，精的本源 */
+            --qi-color: #2ecc71; /* 绿色代表生命能量 */
+            --shen-color: #9b59b6; /* 紫色代表灵性 */
+            --bg-light: #f8f9fa;
+            --bg-dark: #181818;
+            --text-light: #2d3748;
+            --text-dark: #f8f9fa;
+            --primary: #5D5CDE;
+            --primary-hover: #4a49be;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .title-font {
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+
+        /* 三叶草/三元环设计 */
+        .clover-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .clover-leaf {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .clover-leaf-jing {
+            top: 150px;
+            left: 20px;
+            background: linear-gradient(135deg, var(--jing-color), #1a6aa5);
+            transform-origin: 130px 30px;
+        }
+
+        .clover-leaf-qi {
+            top: 20px;
+            left: 90px;
+            background: linear-gradient(135deg, var(--qi-color), #159947);
+            transform-origin: 60px 160px;
+        }
+
+        .clover-leaf-shen {
+            top: 150px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--shen-color), #7d3c98);
+            transform-origin: -10px 30px;
+        }
+
+        .clover-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, white, #f1f1f1);
+            box-shadow: 0 0 20px rgba(93, 92, 222, 0.5);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s ease;
+        }
+
+        .active-leaf {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        }
+
+        /* 能量球设计 */
+        .energy-ball-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+        }
+
+        .energy-ball {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, white, rgba(93, 92, 222, 0.3));
+            box-shadow: 0 0 30px rgba(93, 92, 222, 0.5);
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .energy-flow {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            transform-origin: 50% 100%;
+            z-index: 5;
+            opacity: 0.7;
+            filter: blur(1px);
+            animation: flow-pulse 3s infinite alternate;
+        }
+
+        @keyframes flow-pulse {
+            0% { opacity: 0.3; height: 80px; }
+            100% { opacity: 0.8; height: 130px; }
+        }
+
+        /* 生命树设计 */
+        .tree-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            margin: 0 auto;
+        }
+
+        .tree-root {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(to bottom, #8B4513, #654321);
+            border-radius: 0 0 15px 15px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .tree-trunk {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 140px;
+            background: linear-gradient(to top, #8B4513, #A0522D);
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .tree-crown {
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, var(--qi-color), var(--qi-color), rgba(46, 204, 113, 0.5));
+            border-radius: 50% 50% 50% 50%;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .tree-flower {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, var(--shen-color), rgba(155, 89, 182, 0.5));
+            border-radius: 50%;
+            opacity: 0.8;
+            transition: all 0.5s ease;
+        }
+
+        .tab {
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .glow-effect {
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--primary); }
+            100% { box-shadow: 0 0 20px var(--primary), 0 0 30px var(--primary); }
+        }
+
+        /* 深色模式 */
+        .dark {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .dark .card {
+            background-color: #262626;
+        }
+
+        .progress-bar {
+            position: relative;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .dark .progress-bar {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease-out;
+        }
+
+        /* 状态指示器 */
+        .status-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .status-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .status-circle {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin: 0 auto 5px;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl md:text-5xl text-center title-font mb-8 text-primary">精氣神</h1>
+        <p class="text-center mb-8">三寶修炼之旅</p>
+        
+        <!-- 选项卡 -->
+        <div class="flex justify-center space-x-2 md:space-x-6 mb-8 overflow-x-auto">
+            <div class="tab active px-3 py-2 text-base" data-tab="design1">三元環</div>
+            <div class="tab px-3 py-2 text-base" data-tab="design2">能量球</div>
+            <div class="tab px-3 py-2 text-base" data-tab="design3">生命樹</div>
+        </div>
+        
+        <!-- 设计展示区 -->
+        <div class="relative max-w-md mx-auto mb-8">
+            <!-- 三叶草/三元环设计 -->
+            <div id="design1" class="design-container">
+                <div class="card bg-white rounded-xl shadow-lg p-6 mb-4">
+                    <h2 class="text-2xl title-font text-center mb-4">三元環 · 平衡之道</h2>
+                    <div class="clover-container">
+                        <div class="clover-leaf clover-leaf-jing" data-type="jing">精</div>
+                        <div class="clover-leaf clover-leaf-qi" data-type="qi">氣</div>
+                        <div class="clover-leaf clover-leaf-shen" data-type="shen">神</div>
+                        <div class="clover-center">合一</div>
+                    </div>
+                    
+                    <div class="status-indicator">
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--jing-color)"></div>
+                            <div class="text-xs">精 (60%)</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--qi-color)"></div>
+                            <div class="text-xs">氣 (45%)</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--shen-color)"></div>
+                            <div class="text-xs">神 (30%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="mb-2 flex justify-between">
+                            <span class="text-sm font-medium">今日修炼进度</span>
+                            <span class="text-sm font-medium">45%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill bg-primary" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl title-font mb-2">三元環說明</h3>
+                    <p class="mb-3 text-sm">三元環代表精、氣、神三者的平衡與互動。當三者達到均衡，中央的"合一"將會被激活，象徵著身心靈的整體和諧。</p>
+                    <p class="text-sm"><span class="font-bold">點擊互動：</span> 點擊各個環可查看相應修煉內容與建議。</p>
+                </div>
+            </div>
+            
+            <!-- 能量球设计 -->
+            <div id="design2" class="design-container hidden">
+                <div class="card bg-white rounded-xl shadow-lg p-6 mb-4">
+                    <h2 class="text-2xl title-font text-center mb-4">能量球 · 匯聚之源</h2>
+                    <div class="energy-ball-container">
+                        <div class="energy-ball"></div>
+                        <!-- Energy flows will be dynamically generated by JS -->
+                    </div>
+                    
+                    <div class="status-indicator">
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--jing-color)"></div>
+                            <div class="text-xs">精 (60%)</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--qi-color)"></div>
+                            <div class="text-xs">氣 (45%)</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--shen-color)"></div>
+                            <div class="text-xs">神 (30%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="mb-2 flex justify-between">
+                            <span class="text-sm font-medium">今日修炼进度</span>
+                            <span class="text-sm font-medium">45%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill bg-primary" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl title-font mb-2">能量球說明</h3>
+                    <p class="mb-3 text-sm">能量球代表精氣神的匯聚與流轉。三色能量流向中心凝聚，象徵著生命能量的循環與提升。</p>
+                    <p class="text-sm"><span class="font-bold">點擊互動：</span> 點擊中央能量球可查看當前元氣狀態與能量流動。</p>
+                </div>
+            </div>
+            
+            <!-- 生命树设计 -->
+            <div id="design3" class="design-container hidden">
+                <div class="card bg-white rounded-xl shadow-lg p-6 mb-4">
+                    <h2 class="text-2xl title-font text-center mb-4">生命樹 · 生長之感</h2>
+                    <div class="tree-container">
+                        <div class="tree-flower" data-type="shen"></div>
+                        <div class="tree-crown" data-type="qi"></div>
+                        <div class="tree-trunk"></div>
+                        <div class="tree-root" data-type="jing"></div>
+                    </div>
+                    
+                    <div class="status-indicator">
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--jing-color)"></div>
+                            <div class="text-xs">精 (60%)</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--qi-color)"></div>
+                            <div class="text-xs">氣 (45%)</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-circle" style="background-color: var(--shen-color)"></div>
+                            <div class="text-xs">神 (30%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="mb-2 flex justify-between">
+                            <span class="text-sm font-medium">今日修炼进度</span>
+                            <span class="text-sm font-medium">45%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill bg-primary" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl title-font mb-2">生命樹說明</h3>
+                    <p class="mb-3 text-sm">生命樹形象地展示了精氣神的層次關係。根部代表"精"，樹冠代表"氣"，頂部之花代表"神"，象徵靈性的綻放。</p>
+                    <p class="text-sm"><span class="font-bold">點擊互動：</span> 點擊樹的不同部位可查看相應的修煉内容。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 操作区 -->
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
+            <button class="practice-btn bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full shadow-md transition duration-300 text-base" data-type="jing">煉精</button>
+            <button class="practice-btn bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full shadow-md transition duration-300 text-base" data-type="qi">煉氣</button>
+            <button class="practice-btn bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-full shadow-md transition duration-300 text-base" data-type="shen">煉神</button>
+        </div>
+        
+        <!-- 功能区 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
+            <div class="card bg-white rounded-xl shadow-lg p-5">
+                <h3 class="title-font text-xl mb-2">今日建議</h3>
+                <p class="text-sm">今日煉精稍顯不足，宜多加練習。氣神已有小成，繼續保持。</p>
+            </div>
+            <div class="card bg-white rounded-xl shadow-lg p-5">
+                <h3 class="title-font text-xl mb-2">修煉日誌</h3>
+                <p class="text-sm">已連續修煉15天，本週重點關注"煉精化氣"。</p>
+            </div>
+            <div class="card bg-white rounded-xl shadow-lg p-5">
+                <h3 class="title-font text-xl mb-2">輔助功能</h3>
+                <div class="flex space-x-2 mt-3">
+                    <button class="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-700 rounded">計時器</button>
+                    <button class="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-700 rounded">冥想</button>
+                    <button class="px-3 py-1 text-xs bg-gray-200 dark:bg-gray-700 rounded">音樂</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 模式切换 -->
+        <div class="text-center">
+            <button id="theme-toggle" class="text-sm text-gray-500 dark:text-gray-400">
+                切換深色/淺色模式
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 深色模式切换
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+            updateThemeColors();
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            updateThemeColors();
+        });
+        
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            updateThemeColors();
+        });
+        
+        function updateThemeColors() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if (isDark) {
+                    card.classList.add('bg-gray-800');
+                    card.classList.remove('bg-white');
+                } else {
+                    card.classList.remove('bg-gray-800');
+                    card.classList.add('bg-white');
+                }
+            });
+        }
+        
+        // 选项卡切换
+        const tabs = document.querySelectorAll('.tab');
+        const designContainers = document.querySelectorAll('.design-container');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // 更新标签状态
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // 显示对应的设计
+                designContainers.forEach(container => {
+                    container.classList.add('hidden');
+                });
+                document.getElementById(tabId).classList.remove('hidden');
+            });
+        });
+        
+        // 练习按钮点击
+        const practiceButtons = document.querySelectorAll('.practice-btn');
+        const jingProgress = 60;
+        const qiProgress = 45;
+        const shenProgress = 30;
+        
+        practiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const type = button.getAttribute('data-type');
+                
+                // 动画效果
+                button.classList.add('glow-effect');
+                setTimeout(() => {
+                    button.classList.remove('glow-effect');
+                }, 1000);
+                
+                // 显示练习效果
+                if (type === 'jing') {
+                    activateCloverLeaf('jing');
+                    activateEnergyFlow('jing');
+                    activateTreePart('jing');
+                } else if (type === 'qi') {
+                    activateCloverLeaf('qi');
+                    activateEnergyFlow('qi');
+                    activateTreePart('qi');
+                } else if (type === 'shen') {
+                    activateCloverLeaf('shen');
+                    activateEnergyFlow('shen');
+                    activateTreePart('shen');
+                }
+            });
+        });
+        
+        // 三元环互动
+        function activateCloverLeaf(type) {
+            const leaves = document.querySelectorAll('.clover-leaf');
+            const targetLeaf = document.querySelector(`.clover-leaf-${type}`);
+            
+            leaves.forEach(leaf => leaf.classList.remove('active-leaf'));
+            targetLeaf.classList.add('active-leaf');
+            
+            // 简单动画：放大再恢复
+            gsap.to(targetLeaf, {
+                scale: 1.2,
+                duration: 0.3,
+                ease: "power2.out",
+                onComplete: () => {
+                    gsap.to(targetLeaf, {
+                        scale: 1,
+                        duration: 0.5,
+                        ease: "elastic.out(1, 0.3)"
+                    });
+                }
+            });
+            
+            // 当所有叶片被激活时的特效
+            setTimeout(() => {
+                checkCloverCompletion();
+            }, 500);
+        }
+        
+        function checkCloverCompletion() {
+            const center = document.querySelector('.clover-center');
+            
+            // 假设所有叶片已激活
+            if (true) {
+                center.classList.add('glow-effect');
+                gsap.to(center, {
+                    scale: 1.2,
+                    boxShadow: "0 0 30px rgba(93, 92, 222, 0.8)",
+                    duration: 1,
+                    yoyo: true,
+                    repeat: 1
+                });
+                
+                setTimeout(() => {
+                    center.classList.remove('glow-effect');
+                }, 3000);
+            }
+        }
+        
+        // 能量球互动
+        // 创建能量流
+        const energyBallContainer = document.querySelector('.energy-ball-container');
+        const energyBall = document.querySelector('.energy-ball');
+        
+        // 创建能量流
+        function createEnergyFlows() {
+            const colors = {
+                jing: 'var(--jing-color)',
+                qi: 'var(--qi-color)',
+                shen: 'var(--shen-color)'
+            };
+            
+            const types = ['jing', 'qi', 'shen'];
+            const flowCount = 30; // 每种类型的流的数量
+            
+            types.forEach(type => {
+                for (let i = 0; i < flowCount; i++) {
+                    const angle = (i / flowCount) * 120 + {
+                        jing: 180,
+                        qi: 300,
+                        shen: 60
+                    }[type];
+                    
+                    const flow = document.createElement('div');
+                    flow.className = `energy-flow energy-flow-${type}`;
+                    flow.style.background = `linear-gradient(to top, transparent, ${colors[type]})`;
+                    flow.style.transform = `rotate(${angle}deg)`;
+                    flow.style.left = '50%';
+                    flow.style.bottom = '50%';
+                    flow.style.animationDelay = `${Math.random() * 2}s`;
+                    
+                    energyBallContainer.appendChild(flow);
+                }
+            });
+        }
+        
+        createEnergyFlows();
+        
+        function activateEnergyFlow(type) {
+            const flows = document.querySelectorAll(`.energy-flow-${type}`);
+            const ball = document.querySelector('.energy-ball');
+            
+            flows.forEach(flow => {
+                gsap.to(flow, {
+                    opacity: 1,
+                    height: "150px",
+                    duration: 0.5,
+                    ease: "power2.out",
+                    yoyo: true,
+                    repeat: 1
+                });
+            });
+            
+            // 能量球效果
+            gsap.to(ball, {
+                boxShadow: `0 0 40px var(--${type}-color)`,
+                duration: 0.5,
+                ease: "power2.out",
+                yoyo: true,
+                repeat: 1
+            });
+        }
+        
+        // 生命树互动
+        function activateTreePart(type) {
+            let target;
+            if (type === 'jing') {
+                target = document.querySelector('.tree-root');
+                gsap.to(target, {
+                    backgroundColor: 'var(--jing-color)',
+                    width: "40px",
+                    height: "70px",
+                    duration: 0.5,
+                    ease: "power2.out",
+                    yoyo: true,
+                    repeat: 1
+                });
+            } else if (type === 'qi') {
+                target = document.querySelector('.tree-crown');
+                gsap.to(target, {
+                    backgroundColor: 'var(--qi-color)',
+                    width: "200px",
+                    height: "200px",
+                    duration: 0.5,
+                    ease: "power2.out",
+                    yoyo: true,
+                    repeat: 1
+                });
+            } else if (type === 'shen') {
+                target = document.querySelector('.tree-flower');
+                gsap.to(target, {
+                    backgroundColor: 'var(--shen-color)',
+                    width: "50px",
+                    height: "50px",
+                    boxShadow: "0 0 20px var(--shen-color)",
+                    duration: 0.5,
+                    ease: "power2.out",
+                    yoyo: true,
+                    repeat: 1
+                });
+            }
+        }
+        
+        // 初始化交互元素
+        document.querySelectorAll('.clover-leaf').forEach(leaf => {
+            leaf.addEventListener('click', (e) => {
+                const type = e.target.getAttribute('data-type');
+                activateCloverLeaf(type);
+            });
+        });
+        
+        energyBall.addEventListener('click', () => {
+            gsap.to(energyBall, {
+                scale: 1.2,
+                boxShadow: "0 0 40px rgba(93, 92, 222, 0.8)",
+                duration: 0.5,
+                ease: "power2.out",
+                yoyo: true,
+                repeat: 1
+            });
+            
+            // 触发所有能量流动画
+            activateEnergyFlow('jing');
+            activateEnergyFlow('qi');
+            activateEnergyFlow('shen');
+        });
+        
+        // 树的各部分点击事件
+        document.querySelectorAll('.tree-root, .tree-crown, .tree-flower').forEach(part => {
+            part.addEventListener('click', (e) => {
+                const type = e.target.getAttribute('data-type');
+                if (type) {
+                    activateTreePart(type);
+                }
+            });
+        });
+        
+        // 初始化状态指示器
+        updateStatusIndicators(jingProgress, qiProgress, shenProgress);
+        
+        function updateStatusIndicators(jing, qi, shen) {
+            const jingCircles = document.querySelectorAll('.status-circle:nth-child(1)');
+            const qiCircles = document.querySelectorAll('.status-circle:nth-child(1) + div + .status-circle');
+            const shenCircles = document.querySelectorAll('.status-circle:nth-child(1) + div + div + div + .status-circle');
+            
+            jingCircles.forEach(circle => {
+                circle.style.transform = `scale(${jing/100 + 0.5})`;
+                circle.style.boxShadow = `0 0 ${jing/10}px var(--jing-color)`;
+            });
+            
+            qiCircles.forEach(circle => {
+                circle.style.transform = `scale(${qi/100 + 0.5})`;
+                circle.style.boxShadow = `0 0 ${qi/10}px var(--qi-color)`;
+            });
+            
+            shenCircles.forEach(circle => {
+                circle.style.transform = `scale(${shen/100 + 0.5})`;
+                circle.style.boxShadow = `0 0 ${shen/10}px var(--shen-color)`;
+            });
+        }
+        
+        // 初始更新主题
+        updateThemeColors();
+    </script>
+
+
+</body></html>
